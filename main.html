@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>KDMax Search</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+    <link rel="stylesheet" href="./main.css">
+</head>
+<body>
+    <header>
+        <div class="navbar navbar-dark bg-dark shadow-sm">
+            <div class="container d-flex justify-content-between align-items-center">
+                <a href="#" class="navbar-brand d-flex align-items-center">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" aria-hidden="true" class="me-2" viewBox="0 0 24 24">
+                        <path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"></path>
+                        <circle cx="12" cy="13" r="4"></circle>
+                    </svg>
+                    <strong>Logo</strong>
+                </a>
+                <div>
+                    <a href="#" class="btn btn-outline-danger">Logout</a>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <main>
+        <section class="py-5 text-center container">
+            <div class="btn-group mb-3">
+                <button type="button" class="btn btn-danger">Model</button>
+                <button type="button" class="btn btn-danger dropdown-toggle dropdown-toggle-split" data-bs-toggle="dropdown" aria-expanded="false">
+                    <span class="visually-hidden">Toggle Dropdown</span>
+                </button>
+                <ul class="dropdown-menu">
+                    <li><a class="dropdown-item" href="#">Alice</a></li>
+                    <li><a class="dropdown-item" href="#">Alizza</a></li>
+                    <li><a class="dropdown-item" href="#">Bellita</a></li>
+                    <li><a class="dropdown-item" href="#">Bolero</a></li>
+                    <li><a class="dropdown-item" href="#">Caldo</a></li>
+                    <li><a class="dropdown-item" href="#">Kylie</a></li>
+                    <li><a class="dropdown-item" href="#">Kassey</a></li>
+                    <li><a class="dropdown-item" href="#">Leon</a></li>
+                    <li><a class="dropdown-item" href="#">Luciana</a></li>
+                    <li><a class="dropdown-item" href="#">Mason</a></li>
+                    <li><a class="dropdown-item" href="#">Vincenzo</a></li>
+                </ul>
+            </div>
+
+            <div class="btn-group mb-3">
+                <button type="button" class="btn btn-danger">ประเภทหน้าบาน</button>
+                <button type="button" class="btn btn-danger dropdown-toggle dropdown-toggle-split" data-bs-toggle="dropdown" aria-expanded="false">
+                    <span class="visually-hidden">Toggle Dropdown</span>
+                </button>
+                <ul class="dropdown-menu">
+                    <li><a class="dropdown-item" href="#">ปิดขอบ</a></li>
+                    <li><a class="dropdown-item" href="#">เมมเบรน</a></li>
+                    <li><a class="dropdown-item" href="#">พ่นสี</a></li>
+                    <li><a class="dropdown-item" href="#">อลูมิเนียม</a></li>
+                </ul>
+            </div>
+
+            <div class="btn-group mb-3">
+                <button type="button" class="btn btn-danger">มือจับ</button>
+                <button type="button" class="btn btn-danger dropdown-toggle dropdown-toggle-split" data-bs-toggle="dropdown" aria-expanded="false">
+                    <span class="visually-hidden">Toggle Dropdown</span>
+                </button>
+                <ul class="dropdown-menu">
+                    <li><a class="dropdown-item" href="#">ไม่มีมือจับ</a></li>
+                    <li><a class="dropdown-item" href="#">เฉียง</a></li>
+                    <li><a class="dropdown-item" href="#">LM16</a></li>
+                    <li><a class="dropdown-item" href="#">HW367</a></li>
+                </ul>
+            </div>
+
+            <div class="btn-group mb-3">
+                <button type="button" class="btn btn-danger">Glass</button>
+                <button type="button" class="btn btn-danger dropdown-toggle dropdown-toggle-split" data-bs-toggle="dropdown" aria-expanded="false">
+                    <span class="visually-hidden">Toggle Dropdown</span>
+                </button>
+                <ul class="dropdown-menu">
+                    <li><a class="dropdown-item" href="#">กระจก</a></li>
+                    <li><a class="dropdown-item" href="#">หวาย</a></li>
+                </ul>
+            </div>
+
+            <div class="btn-group mb-3">
+                <button type="button" class="btn btn-danger">ซุปอลูมิเนียม</button>
+                <button type="button" class="btn btn-danger dropdown-toggle dropdown-toggle-split" data-bs-toggle="dropdown" aria-expanded="false">
+                    <span class="visually-hidden">Toggle Dropdown</span>
+                </button>
+                <ul class="dropdown-menu">
+                    <li><a class="dropdown-item" href="#">AL616</a></li>
+                    <li><a class="dropdown-item" href="#">AL617</a></li>
+                    <li><a class="dropdown-item" href="#">AL618</a></li>
+                    <li><a class="dropdown-item" href="#">AL620</a></li>
+                    <li><a class="dropdown-item" href="#">AL621</a></li>
+                    <li><a class="dropdown-item" href="#">AL622</a></li>
+                    <li><a class="dropdown-item" href="#">P403</a></li>
+                    <li><a class="dropdown-item" href="#">P102</a></li>
+                </ul>
+            </div>
+
+            <div class="btn-group mb-3">
+                <button type="button" class="btn btn-danger">วัสดุ</button>
+                <button type="button" class="btn btn-danger dropdown-toggle dropdown-toggle-split" data-bs-toggle="dropdown" aria-expanded="false">
+                    <span class="visually-hidden">Toggle Dropdown</span>
+                </button>
+                <ul class="dropdown-menu">
+                    <li><a class="dropdown-item" href="#">HMR15</a></li>
+                    <li><a class="dropdown-item" href="#">HMR18</a></li>
+                    <li><a class="dropdown-item" href="#">MDF16</a></li>
+                    <li><a class="dropdown-item" href="#">MDF19</a></li>
+                    <li><a class="dropdown-item" href="#">MDF20</a></li>
+                    <li><a class="dropdown-item" href="#">PB16</a></li>
+                    <li><a class="dropdown-item" href="#">PB19</a></li>
+                    <li><a class="dropdown-item" href="#">ไม้จริง22</a></li>
+                </ul>
+            </div>
+
+            <div class="container">
+                <div class="input-group mb-3">
+                    <input type="text" class="form-control" placeholder="Search...">
+                    <button class="btn btn-outline-secondary" type="button" id="searchButton">Search</button>
+                </div>
+            </div>
+        </section>
+
+        <div class="album py-5 bg-light">
+            <div class="container">
+                <div class="row row-cols-1 row-cols-sm-2 row-cols-md-5 g-3" id="card-container">
+                </div>
+            </div>
+        </div>
+
+        <nav aria-label="Page navigation">
+            <ul class="pagination justify-content-center" id="pagination-container">
+            </ul>
+        </nav>
+    </main>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
+    <script src="./main.js"></script>
+</body>
+</html>

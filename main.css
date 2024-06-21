@@ -1,0 +1,27 @@
+/* styles.css */
+
+/* ตกแต่งกรอบค้นหา */
+.input-group {
+    max-width: 500px;
+    margin: auto;
+    border: 2px solid #007bff; /* เส้นขอบสีน้ำเงิน */
+    border-radius: 0.5rem; /* มุมโค้ง */
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1); /* เงา */
+    padding: 10px;
+}
+
+.form-control {
+    border: none; /* ไม่มีเส้นขอบ */
+    box-shadow: none; /* ไม่มีเงา */
+}
+
+.btn-outline-secondary {
+    color: #007bff; /* สีตัวอักษร */
+    border-color: #007bff; /* เส้นขอบ */
+}
+
+.btn-outline-secondary:hover {
+    color: #fff; /* สีตัวอักษรเมื่อโฮเวอร์ */
+    background-color: #007bff; /* พื้นหลังเมื่อโฮเวอร์ */
+    border-color: #007bff; /* เส้นขอบเมื่อโฮเวอร์ */
+}
