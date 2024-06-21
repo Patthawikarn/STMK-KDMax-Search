@@ -21,7 +21,7 @@ document.getElementById('loginForm').addEventListener('submit', function(event) 
       .then(data => {
         if (data.Status == "OK") {
           alert('Login successful!');
-          window.location.href = "./Search.html";
+          window.location.href = "./main.html";
         } else {
           alert('Login failed. Please try again.');
         }
