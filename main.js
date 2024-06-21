@@ -49,33 +49,53 @@ document.querySelectorAll('.dropdown-item').forEach(item => {
 
 
  
-// แสดงข้อมูลรูป
-const cardTemplate = `
-<div class="col">
-    <div class="card shadow-sm">
-        <svg class="bd-placeholder-img card-img-top" width="100%" height="225" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Placeholder: Thumbnail" preserveAspectRatio="xMidYMid slice" focusable="false"><title>Placeholder</title><rect width="100%" height="100%" fill="#55595c"></rect><text x="50%" y="50%" fill="#eceeef" dy=".3em">Thumbnail</text></svg>
-        <div class="card-body">
-            <p class="card-text">This is a wider card with supporting text below as a natural lead-in to additional content. This content is a little bit longer.</p>
-            <div class="d-flex justify-content-between align-items-center">
+// Function to create and append card elements for images
+function createImageCards(images) {
+    const container = document.getElementById('card-container');
+    container.innerHTML = ''; // Clear existing content
+  
+    images.forEach(image => {
+      const card = `
+        <div class="col">
+          <div class="card shadow-sm">
+            <img src="${image}" class="card-img-top" alt="...">
+            <div class="card-body">
+              <p class="card-text">This is a wider card with supporting text below as a natural lead-in to additional content. This content is a little bit longer.</p>
+              <div class="d-flex justify-content-between align-items-center">
                 <div class="btn-group">
-                    <button type="button" class="btn btn-sm btn-outline-secondary">View</button>
+                  <button type="button" class="btn btn-sm btn-outline-secondary">View</button>
                 </div>
+              </div>
             </div>
+          </div>
         </div>
-    </div>
-</div>
-`;
+      `;
+      container.insertAdjacentHTML('beforeend', card);
+    });
+  }
+  
+  // Mock data for image paths (replace with actual API call or dynamic loading)
+  const imagePaths = [
+    './kitdat/ECAG44.jpg',
+    './kitdat/ECAG45.jpg',
+    './kitdat/ECAx49.jpg',
+    './kitdat/ECAx50.jpg',
+    './kitdat/ECAx51.jpg',
+    './kitdat/ECAx52.jpg',
+    './kitdat/ECAx53.jpg',
+    './kitdat/ECAx54.jpg',
+    './kitdat/ECAx134.jpg',
+    './kitdat/ECAx135.jpg',
+    './kitdat/ECAx149.jpg',
+    './kitdat/ECAx150.jpg',
+    './kitdat/ECAx227.jpg',
+    
 
-// Function to create and append multiple cards
-function createCards(count) {
-const container = document.getElementById('card-container');
-for (let i = 0; i < count; i++) {
-    container.insertAdjacentHTML('beforeend', cardTemplate);
-}
-}
-
-// จำนวนภาพ
-createCards(25);
+    // Add more image paths as needed
+  ];
+  
+  // Call function to create cards from image paths
+  createImageCards(imagePaths);
 
 
 
