@@ -1,4 +1,3 @@
- 
 // ฟังก์ชันสำหรับกรองรายการในเมนู dropdown โดยใช้คำค้นหา
 function filterDropdownItems(searchTerm) {
     const dropdownMenus = document.querySelectorAll('.dropdown-menu');
@@ -7,7 +6,7 @@ function filterDropdownItems(searchTerm) {
         const items = menu.querySelectorAll('.dropdown-item');
 
         items.forEach(item => {
-            const text = item.textContent.toLowerCase();
+            const text = item.textContent.trim().toLowerCase();
             const isVisible = text.includes(searchTerm.toLowerCase());
             item.style.display = isVisible ? 'block' : 'none';
         });
@@ -47,35 +46,33 @@ document.querySelectorAll('.dropdown-item').forEach(item => {
     });
 });
 
-
- 
 // Function to create and append card elements for images
 function createImageCards(images) {
     const container = document.getElementById('card-container');
     container.innerHTML = ''; // Clear existing content
-  
+
     images.forEach(image => {
-      const card = `
+        const card = `
         <div class="col">
-          <div class="card shadow-sm">
-            <img src="${image}" class="card-img-top" alt="...">
-            <div class="card-body">
-              <p class="card-text">This is a wider card with supporting text below as a natural lead-in to additional content. This content is a little bit longer.</p>
-              <div class="d-flex justify-content-between align-items-center">
-                <div class="btn-group">
-                  <button type="button" class="btn btn-sm btn-outline-secondary">View</button>
+            <div class="card shadow-sm">
+                <img src="${image}" class="card-img-top" alt="...">
+                <div class="card-body">
+                    <p class="card-text">This is a wider card with supporting text below as a natural lead-in to additional content. This content is a little bit longer.</p>
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div class="btn-group">
+                            <button type="button" class="btn btn-sm btn-outline-secondary">View</button>
+                        </div>
+                    </div>
                 </div>
-              </div>
             </div>
-          </div>
         </div>
-      `;
-      container.insertAdjacentHTML('beforeend', card);
+        `;
+        container.insertAdjacentHTML('beforeend', card);
     });
-  }
-  
-  // Mock data for image paths (replace with actual API call or dynamic loading)
-  const imagePaths = [
+}
+
+// Mock data for image paths (replace with actual API call or dynamic loading)
+const imagePaths = [
     './kitdat/ECAG44.jpg',
     './kitdat/ECAG45.jpg',
     './kitdat/ECAx49.jpg',
@@ -89,16 +86,11 @@ function createImageCards(images) {
     './kitdat/ECAx149.jpg',
     './kitdat/ECAx150.jpg',
     './kitdat/ECAx227.jpg',
-    
-
     // Add more image paths as needed
-  ];
-  
-  // Call function to create cards from image paths
-  createImageCards(imagePaths);
+];
 
-
-
+// Call function to create cards from image paths
+createImageCards(imagePaths);
 
 // ตั้งค่าเปลี่ยนหน้า
 const itemsPerPage = 10;
