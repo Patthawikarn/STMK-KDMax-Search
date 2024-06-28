@@ -1,10 +1,35 @@
-// ปรับค่า itemsPerPage เป็น 50
-const itemsPerPage = 50;
-let totalItems = 0; // จำนวนรายการทั้งหมด
-let totalPages = 0; // จำนวนหน้าทั้งหมด
-let currentPage = 1; // หน้าปัจจุบัน
+// ค่าเริ่มต้นของ dropdown และ search
+const initialDropdownText = 'ทั้งหมด';
+const initialSearchText = '';
 
-// ฟังก์ชันสำหรับกรองรายการบนการ์ดตามหมวดหมู่ dropdown และคำค้นหา
+// จำนวนการ์ดต่อหน้า
+const itemsPerPage = 50;
+let totalItems = 0;
+let totalPages = 0;
+let currentPage = 1;
+let allCards = [];
+
+// เมื่อโหลดเสร็จให้เรียกฟังก์ชัน fetchCardItems
+window.addEventListener('load', () => {
+    fetchCardItems();
+
+    const dropdown = document.getElementById('dropdown-menu'); // ต้องแก้ ID ให้ตรงกับที่ใช้ใน HTML
+    const searchInput = document.getElementById('searchInput'); // ต้องแก้ ID ให้ตรงกับที่ใช้ใน HTML
+
+    dropdown.addEventListener('change', () => {
+        const category = dropdown.value;
+        const searchTerm = searchInput.value.trim().toLowerCase();
+        filterCardItems(category, searchTerm);
+    });
+
+    searchInput.addEventListener('input', () => {
+        const category = dropdown.value;
+        const searchTerm = searchInput.value.trim().toLowerCase();
+        filterCardItems(category, searchTerm);
+    });
+});
+
+// dropdown และ ค้นหา
 function filterCardItems(category, searchTerm) {
     const cards = document.querySelectorAll('.card');
     let found = false;
@@ -22,29 +47,28 @@ function filterCardItems(category, searchTerm) {
         }
     });
 
-    if (!found) {
-        const container = document.getElementById('card-container');
-        container.innerHTML = '<p class="text-center">ไม่พบข้อมูล</p>';
-    }
+    const container = document.getElementById('card-container');
+    container.innerHTML = found ? '' : '<p class="text-center">ไม่พบข้อมูล</p>';
 }
 
-// ฟังก์ชันสำหรับสร้างองค์ประกอบการ์ดที่รับ URL ของภาพเป็นพารามิเตอร์
+// องค์ประกอบการ์ด
 function createCardElements(cards) {
     const container = document.getElementById('card-container');
     container.innerHTML = '';
 
     cards.forEach(card => {
-        const { PreviewPic, DoorShapeCode, Desc } = card; // ปรับตามโครงสร้างของข้อมูลจาก API
+        const { PreviewPic, UrlImage, Desc } = card;
 
         const cardElement = `
-            <div class="col-6 col-md-4 col-lg-3 mb-4">
-                <div class="card h-100 shadow-sm">
-                    <img src="${PreviewPic}" class="card-img-top" alt="${DoorShapeCode}">
+            <div class="col">
+                <div class="card shadow-sm">
+                    <img src="${UrlImage}" class="card-img-top" alt="">
                     <div class="card-body">
-                        <h5 class="card-title">${Desc}</h5>
+                        <p class="card-title">${PreviewPic}</p>
+                        <p class="card-title-2">${Desc}</p>
                         <div class="d-flex justify-content-between align-items-center">
                             <div class="btn-group">
-                                <button type="button" class="btn btn-sm btn-outline-secondary">ดู</button>
+                                <button type="button" class="btn btn-sm btn-outline-secondary">โหลด</button>
                             </div>
                         </div>
                     </div>
@@ -53,9 +77,13 @@ function createCardElements(cards) {
         `;
         container.insertAdjacentHTML('beforeend', cardElement);
     });
+
+    if (cards.length === 0) {
+        container.innerHTML = '<p class="text-center">ไม่พบข้อมูล</p>';
+    }
 }
 
-// ฟังก์ชันสำหรับเรียกใช้ API เพื่อดึงข้อมูลการ์ด
+// เรียกใช้ข้อมูลจาก API
 function fetchCardItems() {
     const apiUrl = 'https://starmark.work/kdmaxsearch/api/file/mdb=doorstyle';
 
@@ -67,19 +95,19 @@ function fetchCardItems() {
             return response.json();
         })
         .then(data => {
-            console.log('API data:', data); // ตรวจสอบโครงสร้างของข้อมูลที่ได้รับ
+            console.log('API data:', data); // โครงสร้างของข้อมูล
 
-            // ปรับตามโครงสร้างของข้อมูลที่ได้รับจาก API
-            const cards = data.Data; // ข้อมูลการ์ดอยู่ใน data.Data
+            const cards = data.Data;
 
             if (!Array.isArray(cards)) {
                 throw new Error('Expected array but got ' + typeof cards);
             }
 
+            allCards = cards;
             totalItems = cards.length;
             totalPages = Math.ceil(totalItems / itemsPerPage);
 
-            createCardElements(cards);
+            createCardElements(cards.slice(0, itemsPerPage));
             createPagination();
         })
         .catch(error => {
@@ -87,10 +115,7 @@ function fetchCardItems() {
         });
 }
 
-// เรียกใช้ฟังก์ชันสำหรับดึงข้อมูลการ์ดจาก API เมื่อหน้าเว็บโหลดเสร็จสมบูรณ์
-window.addEventListener('load', fetchCardItems);
-
-// ฟังก์ชันสำหรับสร้าง pagination
+// สร้างปุ่มไป-กลับ & เลขหน้า
 function createPagination() {
     const paginationContainer = document.getElementById('pagination-container');
     paginationContainer.innerHTML = '';
@@ -118,7 +143,7 @@ function createPagination() {
     updatePaginationButtons();
 }
 
-// ฟังก์ชันสำหรับเปลี่ยนหน้า
+// เปลี่ยนหน้า
 function changePage(page) {
     if (page < 1) page = 1;
     if (page > totalPages) page = totalPages;
@@ -128,21 +153,11 @@ function changePage(page) {
     const start = (currentPage - 1) * itemsPerPage;
     const end = start + itemsPerPage;
 
-    const container = document.getElementById('card-container');
-    const cards = container.querySelectorAll('.col-6');
-
-    cards.forEach((card, index) => {
-        if (index >= start && index < end) {
-            card.style.display = 'block'; // แสดงการ์ด
-        } else {
-            card.style.display = 'none'; // ซ่อนการ์ด
-        }
-    });
-
+    createCardElements(allCards.slice(start, end));
     updatePaginationButtons();
 }
 
-// ฟังก์ชันสำหรับอัปเดตปุ่ม pagination
+// อัปเดตปุ่ม pagination
 function updatePaginationButtons() {
     const paginationContainer = document.getElementById('pagination-container');
     const pageButtons = paginationContainer.querySelectorAll('.page-item');
@@ -157,20 +172,3 @@ function updatePaginationButtons() {
         }
     });
 }
-
-// ฟังก์ชันสำหรับอัปเดตป้ายกำกับปุ่ม dropdown
-function updateDropdownButtonLabel(category, selectedValue) {
-    const dropdowns = document.querySelectorAll('.btn-group');
-
-    dropdowns.forEach(dropdown => {
-        const button = dropdown.querySelector('.btn-danger');
-
-        if (button.textContent.trim() === category) {
-            button.textContent = selectedValue;
-        }
-    });
-}
-
-// ตั้งค่าเริ่มต้นของ dropdown และ search
-const initialDropdownText = 'ทั้งหมด';
-const initialSearchText = '';
