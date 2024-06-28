@@ -1,7 +1,13 @@
+// ปรับค่า itemsPerPage เป็น 50
+const itemsPerPage = 50;
+let totalItems = 0; // จำนวนรายการทั้งหมด
+let totalPages = 0; // จำนวนหน้าทั้งหมด
+let currentPage = 1; // หน้าปัจจุบัน
+
 // ฟังก์ชันสำหรับกรองรายการบนการ์ดตามหมวดหมู่ dropdown และคำค้นหา
 function filterCardItems(category, searchTerm) {
     const cards = document.querySelectorAll('.card');
-    let found = false; // เพิ่มตัวแปรเพื่อตรวจสอบว่าพบการ์ดที่ตรงหรือไม่
+    let found = false;
 
     cards.forEach(card => {
         const title = card.querySelector('.card-title').textContent.trim().toLowerCase();
@@ -12,95 +18,30 @@ function filterCardItems(category, searchTerm) {
         card.style.display = isVisible ? '' : 'none';
 
         if (isVisible) {
-            found = true; // ตั้งค่าเป็น true เมื่อพบการ์ดที่ตรง
+            found = true;
         }
     });
 
-    // หากไม่พบข้อมูล แสดงข้อความ "ไม่พบข้อมูล"
     if (!found) {
         const container = document.getElementById('card-container');
         container.innerHTML = '<p class="text-center">ไม่พบข้อมูล</p>';
     }
 }
 
-// ฟังก์ชันสำหรับการจัดการการกรองข้อมูลตาม dropdown และคำค้นหา
-function handleFiltering(category, searchTerm) {
-    filterCardItems(category, searchTerm);
-}
-
-// ฟังก์ชันสำหรับอัปเดตป้ายกำกับปุ่ม dropdown
-function updateDropdownButtonLabel(category, selectedValue) {
-    const dropdowns = document.querySelectorAll('.btn-group');
-
-    dropdowns.forEach(dropdown => {
-        const button = dropdown.querySelector('.btn-danger');
-
-        if (button.textContent.trim() === category) {
-            button.textContent = selectedValue;
-        }
-    });
-}
-
-// เก็บค่าเริ่มต้นของ dropdown และ search
-const initialDropdownText = 'ทั้งหมด';
-const initialSearchText = '';
-
-
-// การคลิกที่ปุ่มค้นหา
-document.getElementById('searchButton').addEventListener('click', () => {
-    const selectedCategory = document.querySelector('.btn-group .btn-danger').textContent.trim();
-    const searchTerm = document.querySelector('.form-control').value.trim().toLowerCase();
-
-    handleFiltering(selectedCategory, searchTerm);
-});
-
-// การคลิกที่รายการ dropdown
-document.querySelectorAll('.dropdown-item').forEach(item => {
-    item.addEventListener('click', () => {
-        const category = item.closest('.btn-group').querySelector('.btn-danger').textContent.trim();
-        const selectedValue = item.textContent.trim();
-
-        updateDropdownButtonLabel(category, selectedValue);
-        
-        // Check if the selectedValue is empty (indicating reset to all categories)
-        if (selectedValue === 'ทั้งหมด') {
-            handleFiltering('', ''); // Reset filter
-        } else {
-            handleFiltering(selectedValue, ''); // Filter by selected category
-        }
-    });
-});
-
-// ข้อมูลจำลองสำหรับการ์ด (แทนที่ด้วยข้อมูลจริงหรือการโหลดแบบไดนามิก)
-const cardItems = [
-    { image: './kitdat/ECAG44.jpg', title: 'ECAG44' },
-    { image: './kitdat/ECAG45.jpg', title: 'ECAG45' },
-    { image: './kitdat/ECAx49.jpg', title: 'ECAx49' },
-    { image: './kitdat/ECAx50.jpg', title: 'ECAx50' },
-    { image: './kitdat/ECAG44.jpg', title: 'ECAG44' },
-    { image: './kitdat/ECAG45.jpg', title: 'ECAG45' },
-    { image: './kitdat/ECAx49.jpg', title: 'ECAx49' },
-    { image: './kitdat/ECAx50.jpg', title: 'ECAx50' },
-    { image: './kitdat/ECAG44.jpg', title: 'ECAG44' },
-    { image: './kitdat/ECAG45.jpg', title: 'ECAG45' },
-    { image: './kitdat/ECAx49.jpg', title: 'ECAx49' },
-    { image: './kitdat/ECAx50.jpg', title: 'ECAx50' },
-    // เพิ่มข้อมูลการ์ดเพิ่มเติมตามต้องการ
-];
-
-// ฟังก์ชันสำหรับสร้างองค์ประกอบการ์ด
+// ฟังก์ชันสำหรับสร้างองค์ประกอบการ์ดที่รับ URL ของภาพเป็นพารามิเตอร์
 function createCardElements(cards) {
     const container = document.getElementById('card-container');
     container.innerHTML = '';
 
     cards.forEach(card => {
+        const { PreviewPic, DoorShapeCode, Desc } = card; // ปรับตามโครงสร้างของข้อมูลจาก API
+
         const cardElement = `
-            <div class="col">
-                <div class="card shadow-sm">
-                    <img src="${card.image}" class="card-img-top" alt="...">
+            <div class="col-6 col-md-4 col-lg-3 mb-4">
+                <div class="card h-100 shadow-sm">
+                    <img src="${PreviewPic}" class="card-img-top" alt="${DoorShapeCode}">
                     <div class="card-body">
-                        <h5 class="card-title">${card.title}</h5>
-                        <p class="card-text">นี่คือการ์ดที่มีข้อความสนับสนุนด้านล่างเป็นส่วนเสริมธรรมชาติ ข้อความนี้ยาวเล็กน้อย</p>
+                        <h5 class="card-title">${Desc}</h5>
                         <div class="d-flex justify-content-between align-items-center">
                             <div class="btn-group">
                                 <button type="button" class="btn btn-sm btn-outline-secondary">ดู</button>
@@ -114,29 +55,51 @@ function createCardElements(cards) {
     });
 }
 
-// เรียกใช้ฟังก์ชันสำหรับสร้างองค์ประกอบการ์ด
-createCardElements(cardItems);
+// ฟังก์ชันสำหรับเรียกใช้ API เพื่อดึงข้อมูลการ์ด
+function fetchCardItems() {
+    const apiUrl = 'https://starmark.work/kdmaxsearch/api/file/mdb=doorstyle';
 
-// ตัวควบคุมหน้า (หากมีการใช้งาน)
+    fetch(apiUrl)
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('Network response was not ok');
+            }
+            return response.json();
+        })
+        .then(data => {
+            console.log('API data:', data); // ตรวจสอบโครงสร้างของข้อมูลที่ได้รับ
 
-// ตั้งค่าเปลี่ยนหน้า
-const itemsPerPage = 10;
-const totalItems = 50;
-const totalPages = Math.ceil(totalItems / itemsPerPage);
+            // ปรับตามโครงสร้างของข้อมูลที่ได้รับจาก API
+            const cards = data.Data; // ข้อมูลการ์ดอยู่ใน data.Data
 
+            if (!Array.isArray(cards)) {
+                throw new Error('Expected array but got ' + typeof cards);
+            }
 
-// ปุ่่มไป-กลับ & เลขหน้า
+            totalItems = cards.length;
+            totalPages = Math.ceil(totalItems / itemsPerPage);
+
+            createCardElements(cards);
+            createPagination();
+        })
+        .catch(error => {
+            console.error('Error fetching data:', error);
+        });
+}
+
+// เรียกใช้ฟังก์ชันสำหรับดึงข้อมูลการ์ดจาก API เมื่อหน้าเว็บโหลดเสร็จสมบูรณ์
+window.addEventListener('load', fetchCardItems);
+
+// ฟังก์ชันสำหรับสร้าง pagination
 function createPagination() {
     const paginationContainer = document.getElementById('pagination-container');
     paginationContainer.innerHTML = '';
-
 
     const prevButton = document.createElement('li');
     prevButton.classList.add('page-item');
     prevButton.innerHTML = '<a class="page-link" href="#">Previous</a>';
     prevButton.addEventListener('click', () => changePage(currentPage - 1));
     paginationContainer.appendChild(prevButton);
-
 
     for (let i = 1; i <= totalPages; i++) {
         const pageButton = document.createElement('li');
@@ -146,16 +109,16 @@ function createPagination() {
         paginationContainer.appendChild(pageButton);
     }
 
-
     const nextButton = document.createElement('li');
     nextButton.classList.add('page-item');
     nextButton.innerHTML = '<a class="page-link" href="#">Next</a>';
     nextButton.addEventListener('click', () => changePage(currentPage + 1));
     paginationContainer.appendChild(nextButton);
+
+    updatePaginationButtons();
 }
 
-let currentPage = 1;
-
+// ฟังก์ชันสำหรับเปลี่ยนหน้า
 function changePage(page) {
     if (page < 1) page = 1;
     if (page > totalPages) page = totalPages;
@@ -166,19 +129,20 @@ function changePage(page) {
     const end = start + itemsPerPage;
 
     const container = document.getElementById('card-container');
-    const cards = container.querySelectorAll('.col');
+    const cards = container.querySelectorAll('.col-6');
 
     cards.forEach((card, index) => {
         if (index >= start && index < end) {
-            card.style.display = '';
+            card.style.display = 'block'; // แสดงการ์ด
         } else {
-            card.style.display = 'none';
+            card.style.display = 'none'; // ซ่อนการ์ด
         }
     });
 
     updatePaginationButtons();
 }
 
+// ฟังก์ชันสำหรับอัปเดตปุ่ม pagination
 function updatePaginationButtons() {
     const paginationContainer = document.getElementById('pagination-container');
     const pageButtons = paginationContainer.querySelectorAll('.page-item');
@@ -194,5 +158,19 @@ function updatePaginationButtons() {
     });
 }
 
-createPagination();
-changePage(1);
+// ฟังก์ชันสำหรับอัปเดตป้ายกำกับปุ่ม dropdown
+function updateDropdownButtonLabel(category, selectedValue) {
+    const dropdowns = document.querySelectorAll('.btn-group');
+
+    dropdowns.forEach(dropdown => {
+        const button = dropdown.querySelector('.btn-danger');
+
+        if (button.textContent.trim() === category) {
+            button.textContent = selectedValue;
+        }
+    });
+}
+
+// ตั้งค่าเริ่มต้นของ dropdown และ search
+const initialDropdownText = 'ทั้งหมด';
+const initialSearchText = '';

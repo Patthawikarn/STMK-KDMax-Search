@@ -13,6 +13,27 @@
     box-shadow: none;
 }
 
+.card {
+    height: 100%;
+}
+
+.card-img-top {
+    height: 200px;
+    object-fit: cover;
+}
+
+@media (min-width: 576px) {
+    .col-md-4 {
+        max-width: 25%; /* 4 columns on medium devices */
+    }
+}
+
+@media (min-width: 768px) {
+    .col-lg-3 {
+        max-width: 20%; /* 5 columns on large devices */
+    }
+}
+
 .btn-outline-secondary {
     color: #007bff;
     border-color: #007bff;
@@ -22,9 +43,4 @@
     color: #fff;
     background-color: #007bff;
     border-color: #007bff;
-}
-
-.card-img-top {
-    height: 200px;
-    object-fit: contain;
 }
