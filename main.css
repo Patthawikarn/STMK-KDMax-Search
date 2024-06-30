@@ -8,6 +8,11 @@
     padding: 10px;
 }
 
+.logo {
+    max-width: 200px; /* ปรับขนาดภาพโลโก้ให้พอดีกับที่ต้องการ */
+    height: auto; /* รักษาอัตราส่วนของภาพ */
+}
+
 .card-title {
     font-size: 20px;
 }
@@ -23,11 +28,49 @@
 
 .card {
     height: 100%;
+    display: flex;
+    flex-direction: column;
 }
 
 .card-img-top {
     height: 200px;
     object-fit: cover;
+}
+
+.card-body {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+
+.card-body .btn-group {
+    align-self: flex-start;
+}
+
+/* Adjustments for pagination in mobile */
+@media (max-width: 575px) {
+    #pagination-container {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: center;
+        gap: 5px;
+    }
+
+    #pagination-container .page-item {
+        flex: 1 0 10%;
+        max-width: 10%;
+        text-align: center;
+    }
+
+    #pagination-container .page-link {
+        padding: 0.5rem 0.75rem;
+    }
+
+    .card-img-top {
+        height: auto;
+        object-fit: cover;
+    }
 }
 
 @media (min-width: 576px) {
@@ -51,4 +94,30 @@
     color: #fff;
     background-color: #007bff;
     border-color: #007bff;
+}
+
+#back-to-top {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    display: none;
+    z-index: 1000;
+    background-color: #007bff; /* เปลี่ยนสีตามที่คุณต้องการ */
+    border: none;
+    border-radius: 50%;
+    width: 50px;
+    height: 50px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-size: 24px;
+}
+
+#back-to-top i {
+    margin: 0;
+}
+
+#back-to-top:hover {
+    background-color: #0056b3; /* เปลี่ยนสีเมื่อ hover */
 }

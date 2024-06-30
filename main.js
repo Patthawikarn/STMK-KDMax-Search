@@ -1,55 +1,48 @@
-// ค่าเริ่มต้นของ dropdown และ search
-const initialDropdownText = 'ทั้งหมด';
-const initialSearchText = '';
+// Logout
+document.querySelector('.btn-outline-danger').addEventListener('click', () => {
+    window.location.href = './index.html';
+});
 
-// จำนวนการ์ดต่อหน้า
-const itemsPerPage = 50;
-let totalItems = 0;
-let totalPages = 0;
-let currentPage = 1;
-let allCards = [];
+// กำหนดตัวแปรที่จำเป็นสำหรับการค้นหา
+const searchInput = document.getElementById('searchInput');
 
-// เมื่อโหลดเสร็จให้เรียกฟังก์ชัน fetchCardItems
-window.addEventListener('load', () => {
-    fetchCardItems();
-
-    const dropdown = document.getElementById('dropdown-menu'); // ต้องแก้ ID ให้ตรงกับที่ใช้ใน HTML
-    const searchInput = document.getElementById('searchInput'); // ต้องแก้ ID ให้ตรงกับที่ใช้ใน HTML
-
-    dropdown.addEventListener('change', () => {
-        const category = dropdown.value;
-        const searchTerm = searchInput.value.trim().toLowerCase();
-        filterCardItems(category, searchTerm);
+// ฟังก์ชันค้นหา Card Items
+function searchCardItems(searchValue) {
+    const filteredCards = allCards.filter(card => {
+        return card.Desc.toLowerCase().includes(searchValue); // กรองตามคำค้นหาที่ตรงกับ "Desc" property
     });
 
+    totalItems = filteredCards.length;
+    totalPages = Math.ceil(totalItems / itemsPerPage);
+    currentPage = 1;
+
+    createCardElements(filteredCards.slice(0, itemsPerPage));
+    createPagination();
+}
+
+// เมื่อกดปุ่มค้นหา
+document.getElementById('searchButton').addEventListener('click', () => {
+    const searchValue = searchInput.value.trim().toLowerCase();
+    searchCardItems(searchValue);
+});
+
+// เมื่อพิมพ์ในช่องค้นหา
+searchInput.addEventListener('input', () => {
+    const searchValue = searchInput.value.trim().toLowerCase();
+    searchCardItems(searchValue);
+});
+
+// เมื่อโหลดเสร็จให้ดึงข้อมูล Card Items และแสดงผล
+window.addEventListener('load', () => {
+    fetchCardItems(); // ดึงข้อมูล Card Items จาก API
+
+    // สร้างการค้นหาตามที่ป้อนเข้า
     searchInput.addEventListener('input', () => {
-        const category = dropdown.value;
-        const searchTerm = searchInput.value.trim().toLowerCase();
-        filterCardItems(category, searchTerm);
+        const searchValue = searchInput.value.trim().toLowerCase();
+        searchCardItems(searchValue);
     });
 });
 
-// dropdown และ ค้นหา
-function filterCardItems(category, searchTerm) {
-    const cards = document.querySelectorAll('.card');
-    let found = false;
-
-    cards.forEach(card => {
-        const title = card.querySelector('.card-title').textContent.trim().toLowerCase();
-        const categoryMatch = category === 'ทั้งหมด' || title.includes(category.toLowerCase());
-        const searchTermMatch = searchTerm === '' || title.includes(searchTerm.toLowerCase());
-
-        const isVisible = categoryMatch && searchTermMatch;
-        card.style.display = isVisible ? '' : 'none';
-
-        if (isVisible) {
-            found = true;
-        }
-    });
-
-    const container = document.getElementById('card-container');
-    container.innerHTML = found ? '' : '<p class="text-center">ไม่พบข้อมูล</p>';
-}
 
 // องค์ประกอบการ์ด
 function createCardElements(cards) {
@@ -68,7 +61,7 @@ function createCardElements(cards) {
                         <p class="card-title-2">${Desc}</p>
                         <div class="d-flex justify-content-between align-items-center">
                             <div class="btn-group">
-                                <button type="button" class="btn btn-sm btn-outline-secondary">โหลด</button>
+                                <button type="button" class="btn btn-sm btn-outline-secondary" onclick="downloadImage('${UrlImage}')">โหลด</button>
                             </div>
                         </div>
                     </div>
@@ -79,8 +72,18 @@ function createCardElements(cards) {
     });
 
     if (cards.length === 0) {
-        container.innerHTML = '<p class="text-center">ไม่พบข้อมูล</p>';
+        displayNoResultsMessage();
     }
+}
+
+// ฟังก์ชันสำหรับการดาวน์โหลดภาพ
+function downloadImage(url) {
+    const link = document.createElement('a');
+    link.href = url;
+    link.download = url.split('/').pop();
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
 }
 
 // เรียกใช้ข้อมูลจาก API
@@ -104,6 +107,7 @@ function fetchCardItems() {
             }
 
             allCards = cards;
+            filteredCards = cards;
             totalItems = cards.length;
             totalPages = Math.ceil(totalItems / itemsPerPage);
 
@@ -112,8 +116,22 @@ function fetchCardItems() {
         })
         .catch(error => {
             console.error('Error fetching data:', error);
+            displayNoResultsMessage();
         });
 }
+
+// เมื่อโหลดเสร็จให้เรียกฟังก์ชัน fetchCardItems
+window.addEventListener('load', () => {
+    fetchCardItems();
+
+    dropdown.addEventListener('change', () => {
+        filterCardItems(dropdown.value, searchInput.value.trim().toLowerCase());
+    });
+
+    searchInput.addEventListener('input', () => {
+        searchCardItems(dropdown.value, searchInput.value.trim().toLowerCase());
+    });
+});
 
 // สร้างปุ่มไป-กลับ & เลขหน้า
 function createPagination() {
@@ -122,7 +140,7 @@ function createPagination() {
 
     const prevButton = document.createElement('li');
     prevButton.classList.add('page-item');
-    prevButton.innerHTML = '<a class="page-link" href="#">Previous</a>';
+    prevButton.innerHTML = '<a class="page-link" href="#">ก่อนหน้า</a>';
     prevButton.addEventListener('click', () => changePage(currentPage - 1));
     paginationContainer.appendChild(prevButton);
 
@@ -136,7 +154,7 @@ function createPagination() {
 
     const nextButton = document.createElement('li');
     nextButton.classList.add('page-item');
-    nextButton.innerHTML = '<a class="page-link" href="#">Next</a>';
+    nextButton.innerHTML = '<a class="page-link" href="#">ถัดไป</a>';
     nextButton.addEventListener('click', () => changePage(currentPage + 1));
     paginationContainer.appendChild(nextButton);
 
@@ -153,7 +171,7 @@ function changePage(page) {
     const start = (currentPage - 1) * itemsPerPage;
     const end = start + itemsPerPage;
 
-    createCardElements(allCards.slice(start, end));
+    createCardElements(filteredCards.slice(start, end));
     updatePaginationButtons();
 }
 
@@ -172,3 +190,27 @@ function updatePaginationButtons() {
         }
     });
 }
+
+
+// จำนวนการ์ดต่อหน้า
+const itemsPerPage = 50;
+let totalItems = 0;
+let totalPages = 0;
+let currentPage = 1;
+let allCards = [];
+let filteredCards = [];
+
+// แสดงปุ่มเมื่อเลื่อนลงมาเกิน 100px
+window.addEventListener('scroll', () => {
+    const backToTopButton = document.getElementById('back-to-top');
+    if (window.scrollY > 100) {
+        backToTopButton.style.display = 'block';
+    } else {
+        backToTopButton.style.display = 'none';
+    }
+});
+
+// เลื่อนกลับไปด้านบนเมื่อปุ่มถูกกด
+document.getElementById('back-to-top').addEventListener('click', () => {
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+});
