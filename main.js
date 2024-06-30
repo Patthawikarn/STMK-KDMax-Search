@@ -3,13 +3,29 @@ document.querySelector('.btn-outline-danger').addEventListener('click', () => {
     window.location.href = './index.html';
 });
 
-// กำหนดตัวแปรที่จำเป็นสำหรับการค้นหา
-const searchInput = document.getElementById('searchInput');
+// Dropdown
+const dropdowns = document.querySelectorAll('.dropdown-menu');
 
-// ฟังก์ชันค้นหา Card Items
+dropdowns.forEach(dropdown => {
+    dropdown.addEventListener('click', (e) => {
+        const selectedText = e.target.textContent.trim(); // ข้อความที่เลือกจาก dropdown
+        const searchInput = document.getElementById('searchInput');
+        
+        // แสดงข้อความที่เลือกในกล่องค้นหา
+        searchInput.value = selectedText;
+
+        // เรียกใช้งานฟังก์ชันค้นหาโดยใช้ข้อความจาก dropdown เป็นเงื่อนไขค้นหา
+        const searchValue = searchInput.value.trim().toLowerCase();
+        searchCardItems(searchValue);
+    });
+});
+
+
+
+// กำหนดตัวแปรที่จำเป็นสำหรับการค้นหา
 function searchCardItems(searchValue) {
     const filteredCards = allCards.filter(card => {
-        return card.Desc.toLowerCase().includes(searchValue); // กรองตามคำค้นหาที่ตรงกับ "Desc" property
+        return card.Desc.toLowerCase().includes(searchValue) || card.PreviewPic.toLowerCase().includes(searchValue); // กรองตามคำค้นหาที่ตรงกับ "Desc" หรือ "PreviewPic"
     });
 
     totalItems = filteredCards.length;
@@ -17,8 +33,14 @@ function searchCardItems(searchValue) {
     currentPage = 1;
 
     createCardElements(filteredCards.slice(0, itemsPerPage));
-    createPagination();
+
+    if (filteredCards.length === 0) {
+        displayNoResultsMessage();
+    } else {
+        createPagination();
+    }
 }
+
 
 // เมื่อกดปุ่มค้นหา
 document.getElementById('searchButton').addEventListener('click', () => {
@@ -32,9 +54,9 @@ searchInput.addEventListener('input', () => {
     searchCardItems(searchValue);
 });
 
-// เมื่อโหลดเสร็จให้ดึงข้อมูล Card Items และแสดงผล
+// ดึงข้อมูล Card Items และแสดงผล
 window.addEventListener('load', () => {
-    fetchCardItems(); // ดึงข้อมูล Card Items จาก API
+    fetchCardItems();
 
     // สร้างการค้นหาตามที่ป้อนเข้า
     searchInput.addEventListener('input', () => {
@@ -48,6 +70,11 @@ window.addEventListener('load', () => {
 function createCardElements(cards) {
     const container = document.getElementById('card-container');
     container.innerHTML = '';
+
+    if (cards.length === 0) {
+        displayNoResultsMessage();
+        return;
+    }
 
     cards.forEach(card => {
         const { PreviewPic, UrlImage, Desc } = card;
@@ -70,10 +97,12 @@ function createCardElements(cards) {
         `;
         container.insertAdjacentHTML('beforeend', cardElement);
     });
+}
 
-    if (cards.length === 0) {
-        displayNoResultsMessage();
-    }
+// ฟังก์ชันแสดงข้อความ "ไม่พบข้อมูล"
+function displayNoResultsMessage() {
+    const container = document.getElementById('card-container');
+    container.innerHTML = '<p class="text-center">ไม่พบข้อมูล</p>';
 }
 
 // ฟังก์ชันสำหรับการดาวน์โหลดภาพ
@@ -200,7 +229,7 @@ let currentPage = 1;
 let allCards = [];
 let filteredCards = [];
 
-// แสดงปุ่มเมื่อเลื่อนลงมาเกิน 100px
+// ปุ่มเมื่อเลื่อนกลับ
 window.addEventListener('scroll', () => {
     const backToTopButton = document.getElementById('back-to-top');
     if (window.scrollY > 100) {
@@ -210,7 +239,7 @@ window.addEventListener('scroll', () => {
     }
 });
 
-// เลื่อนกลับไปด้านบนเมื่อปุ่มถูกกด
+// เลื่อนกลับไปด้านบน
 document.getElementById('back-to-top').addEventListener('click', () => {
     window.scrollTo({ top: 0, behavior: 'smooth' });
 });
