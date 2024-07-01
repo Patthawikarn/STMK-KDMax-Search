@@ -109,7 +109,7 @@ function createCardElements(cards) {
                             <div class="modal-body text-center">
                                 <img src="${UrlImage}" class="img-fluid mb-3" alt="">
                             </div>
-                            <p><strong>Desc:</strong>${Desc}</p>
+                            <p><strong>Desc:</strong> ${Desc}</p>
                             <p><strong>ID:</strong> ${card.Id}</p>
                             <p><strong>DoorShapeCode:</strong> ${card.DoorShapeCode}</p>
                             <p><strong>With Handle:</strong> ${card.Withhandle}</p>
