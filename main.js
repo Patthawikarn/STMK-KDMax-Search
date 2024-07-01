@@ -21,7 +21,6 @@ dropdowns.forEach(dropdown => {
 });
 
 
-
 // กำหนดตัวแปรที่จำเป็นสำหรับการค้นหา
 function searchCardItems(searchValue) {
     const filteredCards = allCards.filter(card => {
@@ -67,6 +66,7 @@ window.addEventListener('load', () => {
 
 
 // องค์ประกอบการ์ด
+// องค์ประกอบการ์ด
 function createCardElements(cards) {
     const container = document.getElementById('card-container');
     container.innerHTML = '';
@@ -77,7 +77,9 @@ function createCardElements(cards) {
     }
 
     cards.forEach(card => {
-        const { PreviewPic, UrlImage, Desc } = card;
+        let { PreviewPic, UrlImage, Desc } = card;
+        
+        PreviewPic = PreviewPic.replace(/\.[^/.]+$/, '');
 
         const cardElement = `
             <div class="col">
