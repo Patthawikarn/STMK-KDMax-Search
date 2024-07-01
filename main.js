@@ -75,7 +75,7 @@ function createCardElements(cards) {
 
     cards.forEach(card => {
         let { PreviewPic, UrlImage, Desc } = card;
-        
+
         PreviewPic = PreviewPic.replace(/\.[^/.]+$/, '');
 
         const cardElement = `
@@ -86,13 +86,43 @@ function createCardElements(cards) {
                         <p class="card-title">${PreviewPic}</p>
                         <p class="card-title-2">${Desc}</p>
                         <div class="d-flex justify-content-between align-items-center">
-                           
+                            <button type="button" class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#exampleModal${card.Id}">
+                                เพิ่มเติม
+                            </button>
                         </div>
                     </div>
                 </div>
             </div>
         `;
         container.insertAdjacentHTML('beforeend', cardElement);
+
+        // เพิ่มข้อมูลใน Modal
+        const modalContent = `
+            <div class="modal fade" id="exampleModal${card.Id}" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                <div class="modal-dialog modal-lg">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="exampleModalLabel">${PreviewPic}</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body">
+                            <div class="modal-body text-center">
+                                <img src="${UrlImage}" class="img-fluid mb-3" alt="">
+                            </div>
+                            <p><strong>Desc:</strong>${Desc}</p>
+                            <p><strong>ID:</strong> ${card.Id}</p>
+                            <p><strong>DoorShapeCode:</strong> ${card.DoorShapeCode}</p>
+                            <p><strong>With Handle:</strong> ${card.Withhandle}</p>
+                            <p><strong>Aluminum Frame Door:</strong> ${card.AlumFrameDoor}</p>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        `;
+        document.body.insertAdjacentHTML('beforeend', modalContent);
     });
 }
 
