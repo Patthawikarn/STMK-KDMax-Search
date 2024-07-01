@@ -30,10 +30,10 @@ dropdowns.forEach(dropdown => {
 // ตัวแปรที่จำเป็นสำหรับค้นหา
 function searchCardItems(searchValues) {
     const filteredCards = allCards.filter(card => {
-        return searchValues.some(value => 
-            card.Desc.toLowerCase().includes(value.toLowerCase()) || 
-            card.PreviewPic.toLowerCase().includes(value.toLowerCase())
-        );
+        return searchValues.some(value => {
+            const regex = new RegExp(value.replace(/[.*+\-?^${}()|[\]\\]/g, '\\$&'), 'i');
+            return regex.test(card.Desc.toLowerCase()) || regex.test(card.PreviewPic.toLowerCase());
+        });
     });
 
     totalItems = filteredCards.length;
@@ -55,6 +55,12 @@ function searchCardItems(searchValues) {
 
 // เมื่อกดปุ่มค้นหา
 document.getElementById('searchButton').addEventListener('click', () => {
+    const searchInputValue = document.getElementById('searchInput').value.trim();
+    if (searchInputValue !== '') {
+        selectedDropdownValues = searchInputValue.split(',').map(item => item.trim());
+    } else {
+        selectedDropdownValues = [];
+    }
     searchCardItems(selectedDropdownValues);
 });
 
