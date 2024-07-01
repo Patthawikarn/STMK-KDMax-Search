@@ -3,28 +3,37 @@ document.querySelector('.btn-outline-danger').addEventListener('click', () => {
     window.location.href = './index.html';
 });
 
+// home
+document.querySelector('.btn-outline-primary').addEventListener('click', () => {
+    window.location.href = './main.html';
+});
+
+// เก็บค่าที่เลือกจาก dropdown
+let selectedDropdownValues = [];
+
 // Dropdown
 const dropdowns = document.querySelectorAll('.dropdown-menu');
 
 dropdowns.forEach(dropdown => {
     dropdown.addEventListener('click', (e) => {
-        const selectedText = e.target.textContent.trim(); // ข้อความที่เลือกจาก dropdown
+        const selectedText = e.target.textContent.trim();
         const searchInput = document.getElementById('searchInput');
         
-        // แสดงข้อความที่เลือกในกล่องค้นหา
-        searchInput.value = selectedText;
+        if (!selectedDropdownValues.includes(selectedText)) {
+            selectedDropdownValues.push(selectedText);
+        }
 
-        // เรียกใช้งานฟังก์ชันค้นหาโดยใช้ข้อความจาก dropdown เป็นเงื่อนไขค้นหา
-        const searchValue = searchInput.value.trim().toLowerCase();
-        searchCardItems(searchValue);
+        searchInput.value = selectedDropdownValues.join(', ');
     });
 });
 
-
-// กำหนดตัวแปรที่จำเป็นสำหรับการค้นหา
-function searchCardItems(searchValue) {
+// ตัวแปรที่จำเป็นสำหรับค้นหา
+function searchCardItems(searchValues) {
     const filteredCards = allCards.filter(card => {
-        return card.Desc.toLowerCase().includes(searchValue) || card.PreviewPic.toLowerCase().includes(searchValue); // กรองตามคำค้นหาที่ตรงกับ "Desc" หรือ "PreviewPic"
+        return searchValues.some(value => 
+            card.Desc.toLowerCase().includes(value.toLowerCase()) || 
+            card.PreviewPic.toLowerCase().includes(value.toLowerCase())
+        );
     });
 
     totalItems = filteredCards.length;
@@ -38,34 +47,22 @@ function searchCardItems(searchValue) {
     } else {
         createPagination();
     }
-}
 
+    // รีเซ็ต dropdown
+    selectedDropdownValues = [];
+    document.getElementById('searchInput').value = '';
+}
 
 // เมื่อกดปุ่มค้นหา
 document.getElementById('searchButton').addEventListener('click', () => {
-    const searchValue = searchInput.value.trim().toLowerCase();
-    searchCardItems(searchValue);
-});
-
-// เมื่อพิมพ์ในช่องค้นหา
-searchInput.addEventListener('input', () => {
-    const searchValue = searchInput.value.trim().toLowerCase();
-    searchCardItems(searchValue);
+    searchCardItems(selectedDropdownValues);
 });
 
 // ดึงข้อมูล Card Items และแสดงผล
 window.addEventListener('load', () => {
     fetchCardItems();
-
-    // สร้างการค้นหาตามที่ป้อนเข้า
-    searchInput.addEventListener('input', () => {
-        const searchValue = searchInput.value.trim().toLowerCase();
-        searchCardItems(searchValue);
-    });
 });
 
-
-// องค์ประกอบการ์ด
 // องค์ประกอบการ์ด
 function createCardElements(cards) {
     const container = document.getElementById('card-container');
@@ -89,9 +86,7 @@ function createCardElements(cards) {
                         <p class="card-title">${PreviewPic}</p>
                         <p class="card-title-2">${Desc}</p>
                         <div class="d-flex justify-content-between align-items-center">
-                            <div class="btn-group">
-                                <button type="button" class="btn btn-sm btn-outline-secondary" onclick="downloadImage('${UrlImage}')">โหลด</button>
-                            </div>
+                           
                         </div>
                     </div>
                 </div>
@@ -107,15 +102,6 @@ function displayNoResultsMessage() {
     container.innerHTML = '<p class="text-center">ไม่พบข้อมูล</p>';
 }
 
-// ฟังก์ชันสำหรับการดาวน์โหลดภาพ
-function downloadImage(url) {
-    const link = document.createElement('a');
-    link.href = url;
-    link.download = url.split('/').pop();
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
-}
 
 // เรียกใช้ข้อมูลจาก API
 function fetchCardItems() {
@@ -151,19 +137,6 @@ function fetchCardItems() {
         });
 }
 
-// เมื่อโหลดเสร็จให้เรียกฟังก์ชัน fetchCardItems
-window.addEventListener('load', () => {
-    fetchCardItems();
-
-    dropdown.addEventListener('change', () => {
-        filterCardItems(dropdown.value, searchInput.value.trim().toLowerCase());
-    });
-
-    searchInput.addEventListener('input', () => {
-        searchCardItems(dropdown.value, searchInput.value.trim().toLowerCase());
-    });
-});
-
 // สร้างปุ่มไป-กลับ & เลขหน้า
 function createPagination() {
     const paginationContainer = document.getElementById('pagination-container');
@@ -171,7 +144,7 @@ function createPagination() {
 
     const prevButton = document.createElement('li');
     prevButton.classList.add('page-item');
-    prevButton.innerHTML = '<a class="page-link" href="#">ก่อนหน้า</a>';
+    prevButton.innerHTML = '<a class="page-link" href="#"><i class="fas fa-chevron-left"></i></a>';
     prevButton.addEventListener('click', () => changePage(currentPage - 1));
     paginationContainer.appendChild(prevButton);
 
@@ -185,7 +158,7 @@ function createPagination() {
 
     const nextButton = document.createElement('li');
     nextButton.classList.add('page-item');
-    nextButton.innerHTML = '<a class="page-link" href="#">ถัดไป</a>';
+    nextButton.innerHTML = '<a class="page-link" href="#"><i class="fas fa-chevron-right"></i></a>';
     nextButton.addEventListener('click', () => changePage(currentPage + 1));
     paginationContainer.appendChild(nextButton);
 
@@ -222,7 +195,6 @@ function updatePaginationButtons() {
     });
 }
 
-
 // จำนวนการ์ดต่อหน้า
 const itemsPerPage = 50;
 let totalItems = 0;
@@ -231,7 +203,7 @@ let currentPage = 1;
 let allCards = [];
 let filteredCards = [];
 
-// ปุ่มเมื่อเลื่อนกลับ
+// ปุ่มเลื่อนกลับ
 window.addEventListener('scroll', () => {
     const backToTopButton = document.getElementById('back-to-top');
     if (window.scrollY > 100) {
@@ -245,3 +217,5 @@ window.addEventListener('scroll', () => {
 document.getElementById('back-to-top').addEventListener('click', () => {
     window.scrollTo({ top: 0, behavior: 'smooth' });
 });
+
+
