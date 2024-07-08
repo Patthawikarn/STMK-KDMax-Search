@@ -12,27 +12,33 @@ document.querySelector('.btn-outline-primary').addEventListener('click', () => {
 let selectedDropdownValues = [];
 
 // Dropdown
-const dropdowns = document.querySelectorAll('.dropdown-menu');
+const dropdownItems = document.querySelectorAll('.dropdown-item');
 
-dropdowns.forEach(dropdown => {
-    dropdown.addEventListener('click', (e) => {
+dropdownItems.forEach(item => {
+    item.addEventListener('click', (e) => {
         const selectedText = e.target.textContent.trim();
-        const searchInput = document.getElementById('searchInput');
-        
         if (!selectedDropdownValues.includes(selectedText)) {
             selectedDropdownValues.push(selectedText);
         }
-
-        searchInput.value = selectedDropdownValues.join(', ');
+        document.getElementById('searchInput').value = selectedDropdownValues.join(', ');
     });
 });
 
 // ตัวแปรที่จำเป็นสำหรับค้นหา
 function searchCardItems(searchValues) {
     const filteredCards = allCards.filter(card => {
-        return searchValues.some(value => {
-            const regex = new RegExp(value.replace(/[.*+\-?^${}()|[\]\\]/g, '\\$&'), 'i');
-            return regex.test(card.Desc.toLowerCase()) || regex.test(card.PreviewPic.toLowerCase());
+        const lowerCaseSearchValues = searchValues.map(value => value.toLowerCase());
+
+        return lowerCaseSearchValues.every(searchTerm => {
+            return Object.values(card).some(value => {
+                if (typeof value === 'string') {
+                    return new RegExp(searchTerm.replace(/[.*+\-?^${}()|[\]\\]/g, '\\$&'), 'i').test(value.toLowerCase());
+                } else if (Array.isArray(value)) {
+                    // ถ้าเป็น array ให้ทำการค้นหาในแต่ละ element ของ array
+                    return value.some(item => typeof item === 'string' && new RegExp(searchTerm.replace(/[.*+\-?^${}()|[\]\\]/g, '\\$&'), 'i').test(item.toLowerCase()));
+                }
+                return false;
+            });
         });
     });
 
@@ -116,10 +122,6 @@ function createCardElements(cards) {
                                 <img src="${UrlImage}" class="img-fluid mb-3" alt="">
                             </div>
                             <p><strong>Desc:</strong> ${Desc}</p>
-                            <p><strong>ID:</strong> ${card.Id}</p>
-                            <p><strong>DoorShapeCode:</strong> ${card.DoorShapeCode}</p>
-                            <p><strong>With Handle:</strong> ${card.Withhandle}</p>
-                            <p><strong>Aluminum Frame Door:</strong> ${card.AlumFrameDoor}</p>
                         </div>
                         <div class="modal-footer">
                             <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
@@ -132,12 +134,10 @@ function createCardElements(cards) {
     });
 }
 
-// ฟังก์ชันแสดงข้อความ "ไม่พบข้อมูล"
 function displayNoResultsMessage() {
     const container = document.getElementById('card-container');
     container.innerHTML = '<p class="text-center">ไม่พบข้อมูล</p>';
 }
-
 
 // เรียกใช้ข้อมูลจาก API
 function fetchCardItems() {
@@ -248,10 +248,8 @@ window.addEventListener('scroll', () => {
         backToTopButton.style.display = 'none';
     }
 });
-
+    
 // เลื่อนกลับไปด้านบน
 document.getElementById('back-to-top').addEventListener('click', () => {
     window.scrollTo({ top: 0, behavior: 'smooth' });
 });
-
-

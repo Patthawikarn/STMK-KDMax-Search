@@ -70,7 +70,7 @@
 }
 
 .card-body .btn-group {
-    align-self: flex-start;
+    align-self: center;
 }
 
 .card-title {
@@ -177,6 +177,7 @@
 .modal-body img {
     max-width: 100%;
     height: auto;
+    max-height: 400px;
 }
 
 .modal-title {
