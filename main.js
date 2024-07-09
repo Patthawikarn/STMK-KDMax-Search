@@ -32,10 +32,11 @@ function searchCardItems(searchValues) {
         return lowerCaseSearchValues.every(searchTerm => {
             return Object.values(card).some(value => {
                 if (typeof value === 'string') {
-                    return new RegExp(searchTerm.replace(/[.*+\-?^${}()|[\]\\]/g, '\\$&'), 'i').test(value.toLowerCase());
+                    // ใช้การค้นหาแบบบางส่วน
+                    return value.toLowerCase().includes(searchTerm);
                 } else if (Array.isArray(value)) {
                     // ถ้าเป็น array ให้ทำการค้นหาในแต่ละ element ของ array
-                    return value.some(item => typeof item === 'string' && new RegExp(searchTerm.replace(/[.*+\-?^${}()|[\]\\]/g, '\\$&'), 'i').test(item.toLowerCase()));
+                    return value.some(item => typeof item === 'string' && item.toLowerCase().includes(searchTerm));
                 }
                 return false;
             });
